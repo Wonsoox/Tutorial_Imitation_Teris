@@ -1,0 +1,56 @@
+classDiagram
+    class GameManager {
+        -int currentScore
+        -bool isGameOver
+        +StartGame()
+        +GameOver()
+        +AddScore(int score)
+    }
+
+    class Board {
+        -int width
+        -int height
+        -Transform[,] grid
+        +IsValidPosition(Vector2Int pos) bool
+        +LockBlock(Transform block, Vector2Int pos)
+        +ClearFullLines()
+    }
+
+    class Tetromino {
+        -Vector2Int currentPosition
+        -Vector2Int[] shape
+        +MoveDown()
+        +MoveHorizontal(int direction)
+        +Rotate()
+    }
+
+    class Spawner {
+        +SpawnBlock() Tetromino
+        +GetNextBlock() Tetromino
+    }
+
+    class InputManager {
+        +HandleInput()
+    }
+
+    class UIManager {
+        +UpdateScoreText(int score)
+        +UpdateNextBlockUI()
+    }
+
+    class UltimateComboMusicManager {
+        -AudioMixerGroup masterMixerGroup
+        -AudioSource[] musicLayers
+        -int currentCombo
+        +AddCombo()
+        -UpdateMusicState()
+    }
+
+    GameManager --> Board : 관리
+    GameManager --> Spawner : 지시
+    GameManager --> UIManager : UI 갱신 요청
+    GameManager --> UltimateComboMusicManager : 오디오 시스템 관리
+    Spawner --> Tetromino : 생성
+    InputManager --> Tetromino : 조작
+    Tetromino ..> Board : 유효성 검사 요청
+    Board --> UltimateComboMusicManager : 줄 삭제 성공 시 콤보 증가 요청
